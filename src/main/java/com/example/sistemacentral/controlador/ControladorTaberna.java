@@ -83,4 +83,7 @@ public class ControladorTaberna {
             vista.getLstSonido().scrollTo(vista.getLstSonido().getItems().size() - 1);
         });
     }
+    public PanelLED getPanelLed() {
+        return panelLed;
+    }
 }

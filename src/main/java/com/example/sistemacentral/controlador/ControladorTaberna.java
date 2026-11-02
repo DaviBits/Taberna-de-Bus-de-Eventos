@@ -16,16 +16,22 @@ public class ControladorTaberna {
     private final SistemaDePedidos pedidos;
     private final Barra barra;
     private final Cocina cocina;
+    private final PanelLED panelLed;
+
 
     public ControladorTaberna(PantallaTaberna vista, EventBus bus) {
         this.vista = vista;
         this.pedidos = new SistemaDePedidos(bus);
         this.barra = new Barra(bus);
         this.cocina = new Cocina(bus);
+        this.panelLed = new PanelLED(bus, vista.getPanelLedContenedor(), vista.getScrollPanelLed());
+
         configurarVista();
     }
 
     public void iniciar() {
+        panelLed.iniciar();
+
         barra.iniciar();
         cocina.iniciar();
     }
@@ -33,6 +39,7 @@ public class ControladorTaberna {
     public void detener() {
         cocina.detener();
         barra.detener();
+        panelLed.detener();
     }
 
     private void configurarVista() {

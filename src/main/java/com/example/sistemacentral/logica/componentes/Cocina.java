@@ -49,4 +49,7 @@ public class Cocina {
             }
         }
     }
+    public static Set<String> catalogo() {
+        return COMIDAS;
+    }
 }

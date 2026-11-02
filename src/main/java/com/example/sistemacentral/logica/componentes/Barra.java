@@ -49,4 +49,7 @@ public class Barra {
             }
         }
     }
+    public static Set<String> catalogo() {
+        return BEBIDAS;
+    }
 }

@@ -1,0 +1,43 @@
+@startuml
+title Diagrama de Componentes - Event Bus "El Gólem Alquímico"
+skinparam componentStyle uml2
+
+package "Vista" {
+  [PantallaTaberna]
+}
+
+package "Controlador" {
+  [ControladorTaberna]
+  [PanelLED]
+}
+
+package "Lógica" {
+  [EventBus]
+  interface "publicar / suscribir" as IBus
+  [SistemaDePedidos]
+  [Barra]
+  [Cocina]
+  [Banda]
+  [SistemaDeSonido]
+  [SistemaDeHumo]
+}
+
+[EventBus] -up- IBus
+
+[ControladorTaberna] --> [PantallaTaberna] : getters
+[ControladorTaberna] ..> [SistemaDePedidos] : crea / usa
+[ControladorTaberna] ..> [Barra] : crea / inicia
+[ControladorTaberna] ..> [Cocina] : crea / inicia
+[ControladorTaberna] ..> [Banda] : crea / inicia
+[ControladorTaberna] ..> [SistemaDeSonido] : crea / inicia
+[ControladorTaberna] ..> [PanelLED] : crea / inicia
+[PanelLED] --> [PantallaTaberna] : pinta en
+
+[SistemaDePedidos] ..> IBus
+[Barra] ..> IBus
+[Cocina] ..> IBus
+[Banda] ..> IBus
+[SistemaDeSonido] ..> IBus
+[SistemaDeHumo] ..> IBus
+[PanelLED] ..> IBus
+@enduml

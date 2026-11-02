@@ -1,0 +1,40 @@
+@startuml
+title Secuencia - Pedido de la Mesa 5 y canción de la banda
+autonumber
+actor Cliente
+participant ControladorTaberna
+participant SistemaDePedidos
+participant EventBus
+participant Barra
+participant Cocina
+participant PanelLED
+participant Banda
+participant SistemaDeSonido
+participant SistemaDeHumo
+
+== Flujo principal: pedido ==
+Cliente -> ControladorTaberna : pulsa "Realizar pedido"
+ControladorTaberna -> SistemaDePedidos : realizarPedido("mesa_5", [cerveza, hamburguesa])
+SistemaDePedidos -> EventBus : publicar(PedidoRealizadoEvent)
+EventBus -> Barra : alRecibir(PedidoRealizadoEvent)
+EventBus -> Cocina : alRecibir(PedidoRealizadoEvent)
+EventBus -> PanelLED : alRecibir(PedidoRealizadoEvent)
+
+... 2 segundos ...
+Barra -> EventBus : publicar(BebidaServidaEvent)
+EventBus -> PanelLED : alRecibir(BebidaServidaEvent)
+
+... 3 segundos más ...
+Cocina -> EventBus : publicar(ComidaPreparadaEvent)
+EventBus -> PanelLED : alRecibir(ComidaPreparadaEvent)
+
+== Flujo en paralelo: banda ==
+Banda -> EventBus : publicar(BandaTocandoEvent)
+EventBus -> SistemaDeSonido : alRecibir(BandaTocandoEvent)
+EventBus -> PanelLED : alRecibir(BandaTocandoEvent)
+EventBus -> SistemaDeHumo : alRecibir(BandaTocandoEvent)
+note right of SistemaDeHumo
+  Solo reacciona si la canción es
+  "Through the Fire and Flames"
+end note
+@enduml

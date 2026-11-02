@@ -1,0 +1,112 @@
+@startuml
+title Diagrama de Clases - Event Bus "El Gólem Alquímico"
+skinparam classAttributeIconSize 0
+skinparam packageStyle rectangle
+
+package "logica.bus" {
+  interface Evento
+  interface Suscriptor<T extends Evento> {
+    + alRecibir(evento: T): void
+  }
+  class EventBus {
+    - suscriptores: Map<Class, List<Suscriptor>>
+    + suscribir(tipo: Class<T>, suscriptor: Suscriptor): void
+    + desuscribir(tipo: Class<T>, suscriptor: Suscriptor): void
+    + publicar(evento: T): void
+  }
+}
+
+package "logica.eventos" {
+  class PedidoRealizadoEvent <<record>> {
+    + mesaId: String
+    + pedidoId: String
+    + items: List<String>
+  }
+  class BebidaServidaEvent <<record>> {
+    + mesaId: String
+    + bebida: String
+  }
+  class ComidaPreparadaEvent <<record>> {
+    + pedidoId: String
+    + plato: String
+  }
+  class BandaTocandoEvent <<record>> {
+    + nombreBanda: String
+    + nombreCancion: String
+    + duracion: int
+  }
+}
+
+package "logica.componentes" {
+  class SistemaDePedidos {
+    + realizarPedido(mesaId: String, items: List<String>): String
+  }
+  class Barra {
+    + iniciar(): void
+    + detener(): void
+  }
+  class Cocina {
+    + iniciar(): void
+    + detener(): void
+  }
+  class Banda {
+    + iniciar(): void
+    + detener(): void
+  }
+  class SistemaDeSonido {
+    + iniciar(): void
+    + detener(): void
+  }
+  class SistemaDeHumo {
+    + iniciar(): void
+    + detener(): void
+  }
+}
+
+package "controlador" {
+  class ControladorTaberna
+  class PanelLED {
+    + mostrarMensaje(texto: String, color: String): void
+  }
+}
+
+package "vista" {
+  class PantallaTaberna
+}
+
+Evento <|.. PedidoRealizadoEvent
+Evento <|.. BebidaServidaEvent
+Evento <|.. ComidaPreparadaEvent
+Evento <|.. BandaTocandoEvent
+
+EventBus o-- "*" Suscriptor : notifica a
+
+SistemaDePedidos --> EventBus
+Barra --> EventBus
+Cocina --> EventBus
+Banda --> EventBus
+SistemaDeSonido --> EventBus
+SistemaDeHumo --> EventBus
+PanelLED --> EventBus
+
+SistemaDePedidos ..> PedidoRealizadoEvent : publica
+Barra ..> PedidoRealizadoEvent : escucha
+Barra ..> BebidaServidaEvent : publica
+Cocina ..> PedidoRealizadoEvent : escucha
+Cocina ..> ComidaPreparadaEvent : publica
+Banda ..> BandaTocandoEvent : publica
+SistemaDeSonido ..> BandaTocandoEvent : escucha
+SistemaDeHumo ..> BandaTocandoEvent : escucha
+PanelLED ..> PedidoRealizadoEvent : escucha
+PanelLED ..> BebidaServidaEvent : escucha
+PanelLED ..> ComidaPreparadaEvent : escucha
+PanelLED ..> BandaTocandoEvent : escucha
+
+ControladorTaberna --> PantallaTaberna : usa getters
+ControladorTaberna --> SistemaDePedidos
+ControladorTaberna --> Barra
+ControladorTaberna --> Cocina
+ControladorTaberna --> Banda
+ControladorTaberna --> SistemaDeSonido
+ControladorTaberna --> PanelLED
+@enduml

@@ -71,8 +71,7 @@
                         <!-- Default configuration for running with: mvn clean javafx:run -->
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>com.example.sistemacentral/com.example.sistemacentral.HelloApplication
-                            </mainClass>
+                            <mainClass>com.example.sistemacentral/com.example.sistemacentral.TabernaApplication</mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>
                             <jlinkImageName>app</jlinkImageName>

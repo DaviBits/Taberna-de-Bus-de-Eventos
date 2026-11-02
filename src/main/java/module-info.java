@@ -13,4 +13,5 @@ module com.example.sistemacentral {
     opens com.example.sistemacentral.logica.componentes to org.junit.platform.commons;
 
     opens com.example.sistemacentral.logica.bus to org.junit.platform.commons;
+
 }

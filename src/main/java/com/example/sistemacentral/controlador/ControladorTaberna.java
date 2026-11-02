@@ -1,10 +1,9 @@
 package com.example.sistemacentral.controlador;
 
 import com.example.sistemacentral.logica.bus.EventBus;
-import com.example.sistemacentral.logica.componentes.Barra;
-import com.example.sistemacentral.logica.componentes.Cocina;
-import com.example.sistemacentral.logica.componentes.SistemaDePedidos;
+import com.example.sistemacentral.logica.componentes.*;
 import com.example.sistemacentral.vista.PantallaTaberna;
+import javafx.application.Platform;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +16,8 @@ public class ControladorTaberna {
     private final Barra barra;
     private final Cocina cocina;
     private final PanelLED panelLed;
+    private final SistemaDeSonido sonido;
+    private final Banda banda;
 
 
     public ControladorTaberna(PantallaTaberna vista, EventBus bus) {
@@ -25,18 +26,25 @@ public class ControladorTaberna {
         this.barra = new Barra(bus);
         this.cocina = new Cocina(bus);
         this.panelLed = new PanelLED(bus, vista.getPanelLedContenedor(), vista.getScrollPanelLed());
-
+        this.sonido = new SistemaDeSonido(bus, this::agregarMensajeSonido);
+        this.banda = new Banda(bus, "Los Seguidores de Dijkstra", List.of(
+                new Banda.Cancion("El Algoritmo del Amor", 180),
+                new Banda.Cancion("Through the Fire and Flames", 440),
+                new Banda.Cancion("Stack Overflow Blues", 210)), 20);
         configurarVista();
     }
 
     public void iniciar() {
         panelLed.iniciar();
-
         barra.iniciar();
         cocina.iniciar();
+        sonido.iniciar();
+        banda.iniciar();
     }
 
     public void detener() {
+        banda.detener();
+        sonido.detener();
         cocina.detener();
         barra.detener();
         panelLed.detener();
@@ -67,5 +75,12 @@ public class ControladorTaberna {
 
         vista.getLblEstado().setText("Pedido " + pedidoId + " enviado.");
         vista.getLstMenu().getSelectionModel().clearSelection();
+    }
+
+    private void agregarMensajeSonido(String mensaje) {
+        Platform.runLater(() -> {
+            vista.getLstSonido().getItems().add(mensaje);
+            vista.getLstSonido().scrollTo(vista.getLstSonido().getItems().size() - 1);
+        });
     }
 }
